@@ -72,8 +72,7 @@ input[type="checkbox"] {
 }
 
 .remove-button {
-  float: right;
-  width: 20%;
+  width: 60%;
   background-color: #ff4d4d; /* Red background */
   color: white; /* White text */
   border: none; /* No border */
@@ -111,4 +110,33 @@ input[type="checkbox"] {
 
 .filterButtonSection > button.ActiveFilter{
   background-color: #4d2600;
+}
+
+.list-buttons {
+  display: inline-flex;
+  justify-content: space-between;
+  width: 35%;
+}
+
+.edit-button{
+  width: 35%;
+  background-color: #5cb85c; 
+  color: white; /* White text */
+  border: none; /* No border */
+  border-radius: 5px; /* Rounded corners */
+  padding: 5px 10px; /* Padding for a comfortable click area */
+  cursor: pointer; /* Change cursor to pointer on hover */
+  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.edit-button:hover{
+  background-color: #4cae4c
+}
+
+.edit-task{
+  width: 55%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
 }
