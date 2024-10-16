@@ -55,12 +55,6 @@ export default function App(){
   function handleEditingTask(id, text){
     setEditTextId(id);
     setEditText(text);
-    setTimeout(() => {
-      if (editInputRef.current) {
-        editInputRef.current.focus();
-        editInputRef.current.select();
-      }
-    }, 0);
   }
 
   function handleSettingEditedTask(e){
@@ -81,6 +75,13 @@ export default function App(){
   }
 
   const editInputRef = useRef(null);
+
+  useEffect(() => {
+    if (editInputRef.current) {
+      editInputRef.current.focus();
+      editInputRef.current.select();
+    }
+  }, [editTextId])
 
   return (
     <div className="App">
