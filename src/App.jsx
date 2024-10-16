@@ -1,12 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { v4 as uuidv4 } from 'uuid';
 
 export default function App(){
-  const [taskList, setTaskList] = useState([
-    { id: uuidv4(), text: "Learn React", completed: false},
-    { id: uuidv4(), text: "Build a To-Do list", completed: false},
-    { id: uuidv4(), text: "Practice more", completed: false}
-  ])
+  const [taskList, setTaskList] = useState(() => {
+    const savedTaskList = localStorage.getItem('taskList');
+    return savedTaskList ? JSON.parse(savedTaskList) : [];
+  });
+
+  useEffect(()=>{
+    localStorage.setItem('taskList', JSON.stringify(taskList))
+  }, [taskList])
   const [newTask, setNewtask] = useState("");
   const [filter, setFilter] = useState('all'); // 'all', 'completed', 'uncompleted'
   const [editTextId, setEditTextId] = useState(null);
@@ -52,6 +55,12 @@ export default function App(){
   function handleEditingTask(id, text){
     setEditTextId(id);
     setEditText(text);
+    setTimeout(() => {
+      if (editInputRef.current) {
+        editInputRef.current.focus();
+        editInputRef.current.select();
+      }
+    }, 0);
   }
 
   function handleSettingEditedTask(e){
@@ -71,11 +80,13 @@ export default function App(){
     setEditText('');
   }
 
+  const editInputRef = useRef(null);
+
   return (
     <div className="App">
       <h1 className="Heading">To-Do List</h1>
       
-      <input className="InputTask" type="text" placeholder="Add To-Do item" value={newTask} onChange={handleNewTask}/>
+      <input className="InputTask" type="text" placeholder="Add To-Do item" value={newTask} onChange={handleNewTask} onKeyDown={(e) => e.key === 'Enter' && handleAddNewTask(e)}/>
       <button className="SubmitButton" onClick={handleAddNewTask}>Submit</button>
       <div className="filterButtonSection">
         <button className={filter === 'all' ? "ActiveFilter" : ""} onClick = {() => setFilter('all')}>All</button>
@@ -85,7 +96,7 @@ export default function App(){
       <ul>
         {filterTasks.map(task => task.id === editTextId ? (
               <li key = {task.id}>
-                <input className="edit-task" type="text" value={editText} onChange={handleSettingEditedTask}/>
+                <input ref={editInputRef} className="edit-task" type="text" value={editText} onChange={handleSettingEditedTask} onKeyDown={(e) => e.key === 'Enter' && handleSaveEditedTask()}/>
                 <div className="list-buttons">
                   <button className="edit-button" onClick={handleSaveEditedTask}>Save</button>
                   <button className="remove-button" onClick={handleCancelEditedTask}>Cancel</button>
@@ -94,7 +105,7 @@ export default function App(){
             ):(
               <li key = {task.id}>
                 <div>
-                  <input type="checkbox" checked={task.completed} onChange={() => handleTaskCompletion(task.id)} readOnly/>
+                  <input type="checkbox" checked={task.completed} onChange={() => handleTaskCompletion(task.id)} onKeyDown={(e) => e.key === 'Enter' && handleTaskCompletion(task.id)} readOnly/>
                   <span style={{ textDecoration: task.completed ? "line-through" : "none" }}>
                     {task.text}
                   </span>
